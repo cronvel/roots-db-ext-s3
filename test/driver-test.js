@@ -1,7 +1,7 @@
 /*
-	Roots DB
+	Roots DB S3 Driver
 
-	Copyright (c) 2014 - 2021 Cédric Ronvel
+	Copyright (c) 2021 Cédric Ronvel
 
 	The MIT License (MIT)
 
@@ -70,7 +70,7 @@ var users ;
 const s3Config = require( './s3-config.local.json' ) ;
 
 const usersDescriptor = {
-	url: 'mongodb://localhost:27017/rootsDb/users' ,
+	url: 'mongodb://localhost:27017/rootsDb-s3/users' ,
 	attachmentUrl: s3Config.attachmentUrl ,
 	properties: {
 		firstName: {
@@ -234,9 +234,6 @@ describe( "S3 attachment links" , () => {
 		await attachment.save() ;
 		await user.save() ;
 
-		// Check that the file exists
-		expect( () => { fs.accessSync( attachment.path , fs.R_OK ) ; } ).not.to.throw() ;
-
 		var dbUser = await users.get( id ) ;
 		expect( dbUser ).to.equal( {
 			_id: id ,
@@ -268,7 +265,7 @@ describe( "S3 attachment links" , () => {
 				documentId: id.toString() ,
 				incoming: undefined ,
 				driver: users.attachmentDriver ,
-				path: __dirname + '/tmp/' + dbUser.getId() + '/' + details.attachment.id
+				path: dbUser.getId() + '/' + details.attachment.id
 			}
 		} ) ;
 
@@ -281,7 +278,7 @@ describe( "S3 attachment links" , () => {
 			documentId: id.toString() ,
 			incoming: undefined ,
 			driver: users.attachmentDriver ,
-			path: __dirname + '/tmp/' + dbUser.getId() + '/' + details.attachment.id
+			path: dbUser.getId() + '/' + details.attachment.id
 		} ) ;
 
 		var content = await dbAttachment.load() ;
@@ -339,7 +336,7 @@ describe( "S3 attachment links" , () => {
 				documentId: id.toString() ,
 				incoming: undefined ,
 				driver: users.attachmentDriver ,
-				path: __dirname + '/tmp/' + dbUser.getId() + '/' + details.attachment.id
+				path: dbUser.getId() + '/' + details.attachment.id
 			}
 		} ) ;
 
@@ -352,7 +349,7 @@ describe( "S3 attachment links" , () => {
 			documentId: id.toString() ,
 			incoming: undefined ,
 			driver: users.attachmentDriver ,
-			path: __dirname + '/tmp/' + dbUser.getId() + '/' + details.attachment.id
+			path: dbUser.getId() + '/' + details.attachment.id
 		} ) ;
 
 		var content = await dbAttachment.load() ;
@@ -372,9 +369,6 @@ describe( "S3 attachment links" , () => {
 
 		await attachment.save() ;
 		await user.save() ;
-
-		// Check that the file exists
-		expect( () => { fs.accessSync( attachment.path , fs.R_OK ) ; } ).not.to.throw() ;
 
 		var dbUser = await users.get( id ) ;
 
@@ -426,7 +420,7 @@ describe( "S3 attachment links" , () => {
 				documentId: id.toString() ,
 				incoming: undefined ,
 				driver: users.attachmentDriver ,
-				path: __dirname + '/tmp/' + dbUser.getId() + '/' + details.attachment.id
+				path: dbUser.getId() + '/' + details.attachment.id
 			}
 		} ) ;
 
@@ -439,13 +433,10 @@ describe( "S3 attachment links" , () => {
 			documentId: id.toString() ,
 			incoming: undefined ,
 			driver: users.attachmentDriver ,
-			path: __dirname + '/tmp/' + dbUser.getId() + '/' + details.attachment.id
+			path: dbUser.getId() + '/' + details.attachment.id
 		} ) ;
 
 		await expect( dbAttachment.load().then( v => v.toString() ) ).to.eventually.be( "<html><head></head><body>Hello world!</body></html>\n" ) ;
-
-		// Check that the file exists
-		expect( () => { fs.accessSync( dbAttachment.path , fs.R_OK ) ; } ).not.to.throw() ;
 	} ) ;
 
 	it( "Delete an attachment" , async () => {
@@ -461,9 +452,6 @@ describe( "S3 attachment links" , () => {
 
 		await attachment.save() ;
 		await user.save() ;
-
-		// Check that the file exists
-		expect( () => { fs.accessSync( attachment.path , fs.R_OK ) ; } ).not.to.throw() ;
 
 		var dbUser = await users.get( id ) ;
 
@@ -492,7 +480,7 @@ describe( "S3 attachment links" , () => {
 		expect( () => dbUser.getAttachment( 'file' ) ).to.throw( ErrorStatus , { type: 'notFound' } ) ;
 	} ) ;
 
-	it( "should create, save and replace attachments as stream, and load as stream" , async () => {
+	it.opt( "should create, save and replace attachments as stream, and load as stream" , async () => {
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
@@ -599,7 +587,7 @@ describe( "S3 attachment links" , () => {
 		expect( fakeWritable.get().toString() ).to.be( 'b'.repeat( 30 ) ) ;
 	} ) ;
 
-	it( "should .save() a document with the 'attachmentStreams' option" , async () => {
+	it.opt( "should .save() a document with the 'attachmentStreams' option" , async () => {
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'

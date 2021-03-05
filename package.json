@@ -10,7 +10,7 @@
     "test": "test"
   },
   "devDependencies": {
-    "roots-db": "^0.27.8",
+    "roots-db": "^0.28.0",
     "stream-kit": "^0.4.4"
   },
   "scripts": {
