@@ -213,7 +213,9 @@ describe( "S3 attachment links" , () => {
 
 	beforeEach( clearDB ) ;
 
-	it( "should create, save, and load an attachment" , async () => {
+	it( "should create, save, and load an attachment" , async function() {
+		this.timeout( 6000 ) ;
+
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
@@ -285,7 +287,9 @@ describe( "S3 attachment links" , () => {
 		expect( content.toString() ).to.be( "grigrigredin menufretin\n" ) ;
 	} ) ;
 
-	it( "should alter meta-data of an attachment" , async () => {
+	it( "should alter meta-data of an attachment" , async function() {
+		this.timeout( 6000 ) ;
+
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
@@ -356,7 +360,9 @@ describe( "S3 attachment links" , () => {
 		expect( content.toString() ).to.be( "grigrigredin menufretin\n" ) ;
 	} ) ;
 
-	it( "should replace an attachment" , async () => {
+	it( "should replace an attachment" , async function() {
+		this.timeout( 6000 ) ;
+
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
@@ -439,7 +445,9 @@ describe( "S3 attachment links" , () => {
 		await expect( dbAttachment.load().then( v => v.toString() ) ).to.eventually.be( "<html><head></head><body>Hello world!</body></html>\n" ) ;
 	} ) ;
 
-	it( "Delete an attachment" , async () => {
+	it( "Delete an attachment" , async function() {
+		this.timeout( 6000 ) ;
+		
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
@@ -480,7 +488,9 @@ describe( "S3 attachment links" , () => {
 		expect( () => dbUser.getAttachment( 'file' ) ).to.throw( ErrorStatus , { type: 'notFound' } ) ;
 	} ) ;
 
-	it.opt( "should create, save and replace attachments as stream, and load as stream" , async () => {
+	it( "should create, save and replace attachments as stream, and load as stream" , async function() {
+		this.timeout( 6000 ) ;
+
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
@@ -504,9 +514,6 @@ describe( "S3 attachment links" , () => {
 		await attachment.save() ;
 		await user.save() ;
 
-		// Check that the file exists
-		expect( () => { fs.accessSync( attachment.path , fs.R_OK ) ; } ).not.to.throw() ;
-
 		var dbUser = await users.get( id ) ;
 		expect( dbUser ).to.equal( {
 			_id: id ,
@@ -529,7 +536,7 @@ describe( "S3 attachment links" , () => {
 			documentId: id.toString() ,
 			incoming: undefined ,
 			driver: users.attachmentDriver ,
-			path: __dirname + '/tmp/' + dbUser.getId() + '/' + attachment.id
+			path: dbUser.getId() + '/' + attachment.id
 		} ) ;
 
 		await expect( dbAttachment.load().then( v => v.toString() ) ).to.eventually.be( 'a'.repeat( 40 ) ) ;
@@ -540,9 +547,6 @@ describe( "S3 attachment links" , () => {
 		var attachment2 = user.createAttachment( { filename: 'more-random.bin' , contentType: 'bin/random' } , stream ) ;
 
 		await dbUser.setAttachment( 'file' , attachment2 ) ;
-
-		// Check that the previous file has been deleted
-		expect( () => { fs.accessSync( attachment.path , fs.R_OK ) ; } ).to.throw( Error , { code: 'ENOENT' } ) ;
 
 		await attachment2.save() ;
 		await dbUser.save() ;
@@ -570,13 +574,10 @@ describe( "S3 attachment links" , () => {
 			documentId: id.toString() ,
 			incoming: undefined ,
 			driver: users.attachmentDriver ,
-			path: __dirname + '/tmp/' + dbUser.getId() + '/' + attachment2.id
+			path: dbUser.getId() + '/' + attachment2.id
 		} ) ;
 
 		await expect( dbAttachment.load().then( v => v.toString() ) ).to.eventually.be( 'b'.repeat( 30 ) ) ;
-
-		// Check that the file exists
-		expect( () => { fs.accessSync( dbAttachment.path , fs.R_OK ) ; } ).not.to.throw() ;
 
 		// Now load as a stream
 		var readStream = await dbAttachment.getReadStream() ;
@@ -587,7 +588,9 @@ describe( "S3 attachment links" , () => {
 		expect( fakeWritable.get().toString() ).to.be( 'b'.repeat( 30 ) ) ;
 	} ) ;
 
-	it.opt( "should .save() a document with the 'attachmentStreams' option" , async () => {
+	it( "should .save() a document with the 'attachmentStreams' option" , async function() {
+		this.timeout( 6000 ) ;
+
 		var user = users.createDocument( {
 			firstName: 'Jilbert' ,
 			lastName: 'Polson'
