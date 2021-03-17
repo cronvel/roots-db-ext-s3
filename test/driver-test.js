@@ -33,7 +33,7 @@
 const rootsDb = require( 'roots-db' ) ;
 
 // Force the S3 driver to be this module
-rootsDb.attachmentDriver.s3 = require( '..' ) ;
+rootsDb.attachmentDriver.s3 = require( '../lib/s3.attachmentDriver.js' ) ;
 
 const util = require( 'util' ) ;
 const mongodb = require( 'mongodb' ) ;
