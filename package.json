@@ -1,6 +1,6 @@
 {
   "name": "roots-db-ext-s3",
-  "version": "0.4.11",
+  "version": "0.4.12",
   "engines": {
     "node": ">=14.15.0"
   },
