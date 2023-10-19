@@ -1,6 +1,6 @@
 {
   "name": "roots-db-ext-s3",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "engines": {
     "node": ">=16.13.0"
   },
@@ -13,9 +13,9 @@
     "error-status": "^1.12.1",
     "exm": "^0.5.12",
     "hash-kit": "^0.3.10",
-    "logfella": "^1.4.3",
+    "logfella": "^2.0.1",
     "s3k-core": "^0.9.2",
-    "seventh": "^0.8.2"
+    "seventh": "^0.9.2"
   },
   "scripts": {
     "test": "tea-time -R dot"
